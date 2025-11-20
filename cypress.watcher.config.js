@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const { defineConfig } = require('cypress')
 const { cypressConfig } = require('@axe-core/watcher')
 const assert = require('assert')
