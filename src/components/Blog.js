@@ -53,12 +53,12 @@ const Blog = () => {
         }
       >
         <div className="Blog-hero">
-          <img src={blogHero} />
+          <img src={blogHero}/>
         </div>
         {blogData.map((blog) => (
           <FieldWrap key={blog.id}>
             <div>
-              <img src={arrowRight} />
+              <img src={arrowRight} alt="" />
               <Link to={`/blog/${blog.id}`}>{blog.title}</Link>{' '}
             </div>
             <em>{Math.floor(Math.random() * (6 - 2 + 1) + 2)} minute read</em>

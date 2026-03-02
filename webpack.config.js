@@ -7,6 +7,10 @@ module.exports = {
     filename: 'main.js',
     path: path.resolve(__dirname, 'build'),
   },
+  watchOptions: {
+    ignored: /node_modules/,
+    poll: 1000,
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'public', 'index.html'),
@@ -17,7 +21,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader', 'eslint-loader'],
+        use: ['babel-loader'],
       },
       {
         test: /\.(css)$/,
