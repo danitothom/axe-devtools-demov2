@@ -10,7 +10,14 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3033',
-    trace: 'on-first-retry',
+    // Configure tracing/video via environment variables for CI flexibility.
+    // Examples:
+    //  PW_TRACE=on            -> always collect trace
+    //  PW_TRACE=on-first-retry -> collect trace on first retry (default)
+    //  PW_VIDEO=retain-on-failure -> retain video only on failure
+    trace: process.env.PW_TRACE || 'on-first-retry',
+    video: process.env.PW_VIDEO || 'retain-on-failure',
+    screenshot: process.env.PW_SCREENSHOT || 'only-on-failure',
   },
   projects: [
     {

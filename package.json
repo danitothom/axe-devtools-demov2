@@ -22,6 +22,11 @@
     "e2e:playwright:devtools": "start-server-and-test start-server http://localhost:3033 playwright:devtools",
     "e2e:playwright:watcher": "start-server-and-test start-server http://localhost:3033 playwright:watcher",
     "start:mui": "yarn --cwd=mui start"
+    ,
+    "a11y:fetch": "node scripts/fetch-accessibility-result.js",
+    "a11y:report": "node scripts/generate-html-report.js results",
+    "a11y:fetch-report": "node scripts/fetch-accessibility-result.js && node scripts/generate-html-report.js results",
+    "a11y:playwright": "npm run e2e:playwright:devtools && npm run a11y:report"
   },
   "keywords": [],
   "author": "",
