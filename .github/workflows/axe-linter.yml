@@ -1,9 +1,9 @@
 name: Lint for accessibility issues
 
-on: 
+on:
   pull_request:
-        branches:
-         - main
+    branches:
+      - main
 
 jobs:
   lint:

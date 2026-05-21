@@ -3,6 +3,23 @@ image: cypress/browsers:node18.6.0-chrome105-ff104
 definitions:
   caches:
     cypress: /root/.cache/Cypress/11.2.0/Cypress/
+  steps:
+    - step: &build_and_test
+        name: Build and Test (feature/bugfix/hotfix)
+        caches:
+          - node
+          - cypress
+        script:
+          - export REQUIRE_A11Y_REPORTS=false
+          - npm config set "registry" "https://registry.npmjs.org/"
+          - npm config set "@axe-devtools:registry" "https://agora.dequecloud.com/artifactory/api/npm/dequelabs/"
+          - npm config set "@deque:registry" "https://agora.dequecloud.com/artifactory/api/npm/dequelabs/"
+          - npm config set "//agora.dequecloud.com/artifactory/api/npm/dequelabs/:_auth" "$AGORA_AUTH_TOKEN"
+          - npm config set "//agora.dequecloud.com/artifactory/api/npm/dequelabs/:email" "$AGORA_AUTH_EMAIL"
+          - npm install
+          - npm run build
+          - npx cypress install
+          - npm run e2e:cypress:watcher
 
 pipelines:
   default:
@@ -24,6 +41,28 @@ pipelines:
           - npx cypress install
           - npm run e2e:cypress:watcher
     - step:
+        name: Publish accessibility reports
+        caches:
+          - node
+        script:
+          - echo "Checking for accessibility reports in results/"
+          - |
+            if [ "${REQUIRE_A11Y_REPORTS:-true}" = "false" ]; then
+              echo "REQUIRE_A11Y_REPORTS=false -> skipping report existence check"
+            else
+              if [ -d results ] && ls results/*.html 1> /dev/null 2>&1; then
+                echo "HTML reports found:" && ls -la results/*.html
+              else
+                echo "No HTML reports found — failing pipeline." && exit 1
+              fi
+            fi
+        artifacts:
+          - results/**
+          - playwright-report/**
+          - test-results/**
+          - cypress/screenshots/**
+          - cypress/videos/**
+    - step:
         name: Accessibility results
         caches:
           - node
@@ -32,3 +71,10 @@ pipelines:
           - export RETRY_COUNT=10
           - chmod 755 bitbucket/dev-hub.sh
           - ./bitbucket/dev-hub.sh
+  branches:
+    "feature/*":
+      - step: *build_and_test
+    "bugfix/*":
+      - step: *build_and_test
+    "hotfix/*":
+      - step: *build_and_test
