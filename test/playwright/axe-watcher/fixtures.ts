@@ -6,7 +6,7 @@ const { test, expect } = playwrightTest({
   axe: {
     apiKey: API_KEY
   },
-  headless: false,
+  headless: process.env.HEADLESS !== 'false',
   channel: 'chromium'
 });
 
